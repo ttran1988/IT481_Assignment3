@@ -6,7 +6,7 @@ public class SQLDataBase{
     private Connection connection;
 
     public SQLDataBase() {
-        this.URL = "jdbc:sqlserver://;servername=DESKTOP-4P5ION6\\sqlexpress;trustServerCertificate=true;integratedSecurity=true;databaseName=Northwind";
+        this.URL = "jdbc:sqlserver://;servername=DESKTOP-4P5ION6\\sqlexpress;trustServerCertificate=true;integratedSecurity=true;databaseName=Northwind"; //Windows Authentication
     }
 
     public SQLDataBase(String connection) {
@@ -31,7 +31,7 @@ public class SQLDataBase{
 
     public boolean isConnectionSuccessful() {
         try {
-            if (connection.isValid(10)) {
+            if (connection.isValid(0)) {
                 return true;
             }
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class SQLDataBase{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return "denied";
         }
         return customerCount;
     }
@@ -67,7 +67,8 @@ public class SQLDataBase{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            customerIDList.add("denied");
+            return customerIDList;
         }
         return customerIDList;
     }
@@ -83,7 +84,7 @@ public class SQLDataBase{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return "denied";
         }
         return orderCount;
     }
@@ -99,7 +100,8 @@ public class SQLDataBase{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            orderIDList.add("denied");
+            return orderIDList;
         }
         return orderIDList;
     }
@@ -115,7 +117,7 @@ public class SQLDataBase{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return "denied";
         }
         return employeeCount;
     }
@@ -131,8 +133,43 @@ public class SQLDataBase{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            employeeLastNameList.add("denied");
+            return employeeLastNameList;
         }
         return employeeLastNameList;
+    }
+
+    public ArrayList<String> getCompanyName() {
+        ArrayList<String> companyName = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery("select companyname from dbo.Customers;");
+
+            while (result.next()) {
+                companyName.add("\n" + result.getString(1));
+            }
+
+        } catch (Exception e) {
+            companyName.add("denied");
+            return companyName;
+        }
+        return companyName;
+    }
+
+    public ArrayList<String> getShipName() {
+        ArrayList<String> shipName = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery("select shipname from dbo.Orders;");
+
+            while (result.next()) {
+                shipName.add("\n" + result.getString(1));
+            }
+
+        } catch (Exception e) {
+            shipName.add("denied");
+            return shipName;
+        }
+        return shipName;
     }
 }
